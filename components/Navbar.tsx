@@ -286,7 +286,7 @@ export default function Navbar() {
           {isLandingPage && (
             <div className="pt-4 mt-2">
               <Link
-                href="/register"
+                href="https://comfortable-biscuits-205438.framer.app/"
                 onClick={closeMobile}
                 className="flex items-center justify-center w-full h-12 rounded-full text-base font-semibold transition-colors text-white
                      bg-[#0022ff] hover:bg-[#001de0]
