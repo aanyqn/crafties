@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Bell, Store, X, Package, Truck, CheckCircle2, User, UserCog } from "lucide-react";
+import { Bell, Store, X, Package, Truck, CheckCircle2, User, UserCog, LogOut } from "lucide-react";
 import ThemeToggle from "../ThemeToggle"; // Pastikan path ini sesuai di project Anda
 
 // ─── Types & Mock Data ────────────────────────────────────────────────────────
@@ -180,6 +180,22 @@ export default function CrafterNavbar() {
 
     const unreadCount = MOCK_ORDERS.filter(o => o.status === "New").length;
 
+    const [isOpen, setIsOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
     return (
         <>
             <nav className="sticky top-0 z-40 w-full bg-white dark:bg-neutral-950 border-b border-neutral-200 dark:border-neutral-800">
@@ -246,16 +262,24 @@ export default function CrafterNavbar() {
                             </div>
 
                             <div className="relative group">
-                                <button aria-label="Account"
-                                    className="w-9 h-9 flex items-center justify-center rounded-full transition-colors
-                             text-neutral-700 dark:text-neutral-300
-                             hover:bg-neutral-100 dark:hover:bg-neutral-800
-                             hover:text-neutral-900 dark:hover:text-neutral-100">
+                                {/* ── Trigger Button ── */}
+                                <button
+                                    onClick={() => setIsOpen(!isOpen)}
+                                    aria-label="Account"
+                                    className="w-9 h-9 flex items-center justify-center rounded-full transition-colors cursor-pointer
+                                    text-neutral-700 dark:text-neutral-300
+                                    hover:bg-neutral-100 dark:hover:bg-neutral-800
+                                    hover:text-neutral-900 dark:hover:text-neutral-100"
+                                >
                                     <Store size={20} />
                                 </button>
-
-                                {/* Dropdown Menu */}
-                                <div className="absolute right-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[110]">
+                                {/* ── Dropdown Menu ── */}
+                                <div
+                                    className={`absolute right-0 top-full pt-2 transition-all duration-200 z-[110]
+                                    md:group-hover:opacity-100 md:group-hover:visible
+                                    ${isOpen ? "opacity-100 visible" : "opacity-0 invisible"}
+                                    `}
+                                >
                                     <div className="w-48 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl shadow-lg py-2 flex flex-col">
                                         <div className="px-4 py-3 border-b border-neutral-100 dark:border-neutral-800 mb-1">
                                             <p className="text-sm font-bold text-neutral-900 dark:text-white">My Account</p>
@@ -263,7 +287,8 @@ export default function CrafterNavbar() {
 
                                         <Link
                                             href="/products"
-                                            className="flex items-center gap-3 px-4 py-2 text-sm text-neutral-800 dark:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-800 hover:text-neutral-950 dark:hover:text-neutral-100 transition-colors"
+                                            onClick={() => setIsOpen(false)}
+                                            className="flex items-center gap-3 px-4 py-2 text-sm text-orange-800 dark:text-orange-200 hover:bg-neutral-50 dark:hover:bg-neutral-800 hover:text-orange-950 dark:hover:text-orange-100 transition-colors"
                                         >
                                             <User size={16} />
                                             Login as User
@@ -271,10 +296,20 @@ export default function CrafterNavbar() {
 
                                         <Link
                                             href="/admin"
+                                            onClick={() => setIsOpen(false)}
                                             className="flex items-center gap-3 px-4 py-2 text-sm text-[#0022ff] dark:text-[#0022ff] hover:bg-neutral-50 dark:hover:bg-neutral-800 hover:text-[#0000ff] dark:hover:text-[#0000ff] transition-colors"
                                         >
                                             <UserCog size={16} />
                                             Login as Admin
+                                        </Link>
+
+                                        <Link
+                                            href="/"
+                                            onClick={() => setIsOpen(false)}
+                                            className="flex items-center gap-3 px-4 py-2 text-sm text-red-500 dark:text-red-500 hover:bg-neutral-50 dark:hover:bg-neutral-800 hover:text-red-700 dark:hover:text-red-700 transition-colors"
+                                        >
+                                            <LogOut size={16} />
+                                            Logout
                                         </Link>
                                     </div>
                                 </div>

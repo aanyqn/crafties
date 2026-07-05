@@ -2,10 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname } from 'next/navigation';
 import { useRouter } from "next/navigation";
-import { Search, User, Package, UserCog, UserCheck } from "lucide-react";
+import { Search, User, Package, UserCog, UserCheck, Menu, X, LogOut } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
 import { useCart } from "@/contexts/CartContext";
 
@@ -57,6 +57,22 @@ export default function Navbar() {
     }
   };
 
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <header>
       {/* ── Top Bar ── */}
@@ -100,9 +116,9 @@ export default function Navbar() {
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-3 flex-shrink-0">
+          <div className="flex items-center gap-1 sm:gap-3 md:gap-3 flex-shrink-0">
             <ThemeToggle />
-              {/* Cart */}
+            {/* Cart */}
             <Link href="/cart" aria-label="Shopping cart"
               className="w-9 h-9 flex items-center justify-center rounded-full transition-colors relative
                          text-neutral-700 dark:text-neutral-300
@@ -128,56 +144,77 @@ export default function Navbar() {
                 className="px-4 h-9 hidden md:flex items-center justify-center rounded-full text-sm font-medium transition-colors
                            bg-[#0022ff] hover:bg-[#001de0] text-white
                            dark:bg-[#0022FF] dark:hover:bg-[#3355ee]">
-                Register 
+                Register
               </Link>
             ) : (
-              // ── Dropdown Profile Section ──
-              <div className="relative group">
-                <Link href="/profile" aria-label="Account"
-                  className="w-9 h-9 flex items-center justify-center rounded-full transition-colors
-                             text-neutral-700 dark:text-neutral-300
-                             hover:bg-neutral-100 dark:hover:bg-neutral-800
-                             hover:text-neutral-900 dark:hover:text-neutral-100">
+              <div className="relative group" ref={dropdownRef}>
+                {/* ── Trigger Button ── */}
+                <button
+                  onClick={() => setIsOpen(!isOpen)}
+                  aria-label="Account"
+                  className="w-9 h-9 flex items-center justify-center rounded-full transition-colors cursor-pointer
+                   text-neutral-700 dark:text-neutral-300
+                   hover:bg-neutral-100 dark:hover:bg-neutral-800
+                   hover:text-neutral-900 dark:hover:text-neutral-100"
+                >
                   <User size={20} />
-                </Link>
+                </button>
 
-                {/* Dropdown Menu */}
-                <div className="absolute right-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[110]">
+                {/* ── Dropdown Menu ── */}
+                <div
+                  className={`absolute right-0 top-full pt-2 transition-all duration-200 z-[110]
+                  md:group-hover:opacity-100 md:group-hover:visible
+                  ${isOpen ? "opacity-100 visible" : "opacity-0 invisible"}
+                `}
+                >
                   <div className="w-48 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl shadow-lg py-2 flex flex-col">
                     <div className="px-4 py-3 border-b border-neutral-100 dark:border-neutral-800 mb-1">
                       <p className="text-sm font-bold text-neutral-900 dark:text-white">My Account</p>
                     </div>
-                    
-                    <Link 
-                      href="/profile" 
+
+                    <Link
+                      href="/profile"
+                      onClick={() => setIsOpen(false)} // Tutup menu saat link diklik
                       className="flex items-center gap-3 px-4 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-white transition-colors"
                     >
                       <User size={16} />
                       My Profile
                     </Link>
-                    
-                    <Link 
-                      href="/orders/history" 
+
+                    <Link
+                      href="/orders/history"
+                      onClick={() => setIsOpen(false)}
                       className="flex items-center gap-3 px-4 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-white transition-colors"
                     >
                       <Package size={16} />
                       My Orders
                     </Link>
-                    
-                    <Link 
-                      href="/admin" 
+
+                    <Link
+                      href="/admin"
+                      onClick={() => setIsOpen(false)}
                       className="flex items-center gap-3 px-4 py-2 text-sm text-[#0022ff] dark:text-[#0022ff] hover:bg-neutral-50 dark:hover:bg-neutral-800 hover:text-[#0000ff] dark:hover:text-[#0000ff] transition-colors"
                     >
                       <UserCog size={16} />
                       Login as Admin
                     </Link>
 
-                    <Link 
-                      href="/crafter" 
+                    <Link
+                      href="/crafter"
+                      onClick={() => setIsOpen(false)}
                       className="flex items-center gap-3 px-4 py-2 text-sm text-emerald-500 dark:text-emerald-500 hover:bg-neutral-50 dark:hover:bg-neutral-800 hover:text-emerald-700 dark:hover:text-emerald-700 transition-colors"
                     >
                       <UserCheck size={16} />
                       Login as Crafter
+                    </Link>
+
+                    <Link
+                      href="/"
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center gap-3 px-4 py-2 text-sm text-red-500 dark:text-red-500 hover:bg-neutral-50 dark:hover:bg-neutral-800 hover:text-red-700 dark:hover:text-red-700 transition-colors"
+                    >
+                      <LogOut size={16} />
+                      Logout
                     </Link>
                   </div>
                 </div>
@@ -187,15 +224,7 @@ export default function Navbar() {
             {/* Hamburger — mobile only */}
             <button aria-label="Toggle menu" onClick={() => setMobileOpen((v) => !v)}
               className="md:hidden w-9 h-9 flex flex-col items-center justify-center gap-[5px] p-1 cursor-pointer">
-              <span className={`w-5 h-0.5 rounded block transition-all duration-250 origin-center
-                                bg-neutral-900 dark:bg-neutral-100
-                                ${mobileOpen ? "translate-y-[7px] rotate-45" : ""}`} />
-              <span className={`w-5 h-0.5 rounded block transition-all duration-250
-                                bg-neutral-900 dark:bg-neutral-100
-                                ${mobileOpen ? "opacity-0" : ""}`} />
-              <span className={`w-5 h-0.5 rounded block transition-all duration-250 origin-center
-                                bg-neutral-900 dark:bg-neutral-100
-                                ${mobileOpen ? "-translate-y-[7px] -rotate-45" : ""}`} />
+              {mobileOpen ? <X className="text-neutral-950 dark:text-neutral-100" size={20}/> : <Menu className="text-neutral-950 dark:text-neutral-100" size={20}/>}
             </button>
           </div>
         </div>
@@ -228,14 +257,14 @@ export default function Navbar() {
                                   border-t border-neutral-200 dark:border-neutral-800"
                     style={{ top: "calc(56px + 72px)" }}>
                     {item.subItems.map((sub) => (
-                      <a key={sub.id} href={sub.href}
+                      <Link key={sub.id} href={sub.href}
                         className="flex flex-col items-center gap-2 p-3 rounded-xl transition-colors
                                    hover:bg-neutral-100 dark:hover:bg-neutral-800">
                         <img src={sub.src} alt={sub.alt} className="w-16 h-16 object-contain" />
                         <span className="text-xs font-medium text-neutral-700 dark:text-neutral-300">
                           {sub.label}
                         </span>
-                      </a>
+                      </Link>
                     ))}
                   </div>
                 )}
@@ -263,12 +292,12 @@ export default function Navbar() {
                   {openSub === item.id && (
                     <div className="flex flex-wrap gap-4 px-2 pb-4">
                       {item.subItems?.map((sub) => (
-                        <a key={sub.id} href="#" onClick={closeMobile}
+                        <Link key={sub.id} href="#" onClick={closeMobile}
                           className="flex flex-col items-center gap-1 p-2 rounded-lg transition-colors
                                      hover:bg-neutral-100 dark:hover:bg-neutral-800">
                           <img src={sub.src} alt={sub.alt} className="w-12 h-12 object-contain" />
                           <span className="text-xs text-neutral-600 dark:text-neutral-400">{sub.label}</span>
-                        </a>
+                        </Link>
                       ))}
                     </div>
                   )}
