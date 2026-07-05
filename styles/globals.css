@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap');
 @import "tailwindcss";
 
+@variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans: 'Inter', 'Segoe UI', system-ui, sans-serif;
   --font-display: 'Playfair Display', Georgia, serif;
@@ -49,4 +51,16 @@ body {
 }
 .scrollbar-thin:hover::-webkit-scrollbar-thumb {
   background-color: #0022FF;
+}
+
+:root {
+  --color-star-filled: #0022FF;
+  --color-star-empty: #E5E5E5;
+  --color-star-empty-stroke: #D4D4D4;
+}
+
+.dark {
+  --color-star-filled: #4d6bff;
+  --color-star-empty: #404040;
+  --color-star-empty-stroke: #525252;
 }

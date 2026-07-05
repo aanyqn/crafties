@@ -2,11 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const slides = [
-  { id: "slide-1", src: "/assets/img/hero-image1.png", alt: "Hero slide 1", title: "Decoration", subtitle: "Hiasan untuk mempercantik rumah anda" },
-  { id: "slide-2", src: "/assets/img/hero-image2.jpg", alt: "Hero slide 2", title: "Accessories", subtitle: "Aksesoris lucu yang menawan" },
-  { id: "slide-3", src: "/assets/img/hero-image3.jpg", alt: "Hero slide 3", title: "Stuffed Toys", subtitle: "Boneka rajut yang imut" },
+  { id: "slide-1", src: "/assets/img/hero-image1.png", alt: "Hero slide 1", title: "Decoration", subtitle: "Hiasan untuk mempercantik rumah anda", href: "/products?category=decorations" },
+  { id: "slide-2", src: "/assets/img/hero-image2.jpg", alt: "Hero slide 2", title: "Accessories", subtitle: "Aksesoris lucu yang menawan", href: "/products?category=accessories" },
+  { id: "slide-3", src: "/assets/img/hero-image3.jpg", alt: "Hero slide 3", title: "Stuffed Toys", subtitle: "Boneka rajut yang imut", href: "/products?category=toys" },
 ];
 
 const DELAY = 5000;
@@ -51,37 +53,36 @@ export default function HeroSlider() {
       >
         {/* Slides */}
         {slides.map((slide, i) => (
-          <div
+          <Link
             key={slide.id}
-            className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-              i === current ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-            }`}
-            aria-hidden={i !== current}
+            href={slide.href}
+            className="flex flex-col items-center gap-3 cursor-pointer group"
           >
-            <div className="relative w-full h-full">
-              <Image
-                src={slide.src}
-                alt={slide.alt}
-                fill
-                className="object-cover"
-                priority={i === 0}
-                sizes="100vw"
-              />
+            <div
+              className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${i === current ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+                }`}
+              aria-hidden={i !== current}
+            >
+              <div className="relative w-full h-full">
+                <Image
+                  src={slide.src}
+                  alt={slide.alt}
+                  fill
+                  className="object-cover"
+                  priority={i === 0}
+                  sizes="100vw"
+                />
+              </div>
+              <div className="absolute bottom-10 md:bottom-16 left-1/2 -translate-x-1/2 z-30 text-center text-white w-full px-6 pointer-events-none">
+                <h1 className="font-[family-name:var(--font-display)] text-2xl sm:text-4xl md:text-[2.5rem] lg:text-5xl font-bold leading-tight tracking-[-0.01em] text-white drop-shadow-lg mb-2">
+                  {slide.title}
+                </h1>
+                <p className="text-xs sm:text-sm tracking-wide text-white/90 drop-shadow max-w-xs sm:max-w-md mx-auto">
+                  {slide.subtitle}
+                </p>
+              </div>
             </div>
-
-            {/* Content */}
-            {/* FIX: Padding bottom diatur dinamis (bottom-10 di mobile, bottom-16 di desktop) */}
-            <div className="absolute bottom-10 md:bottom-16 left-1/2 -translate-x-1/2 z-30 text-center text-white w-full px-6 pointer-events-none">
-              {/* FIX: Ukuran teks adaptif menggunakan text-2xl di mobile hingga text-5xl di layar besar */}
-              <h1 className="font-[family-name:var(--font-display)] text-2xl sm:text-4xl md:text-[2.5rem] lg:text-5xl font-bold leading-tight tracking-[-0.01em] text-white drop-shadow-lg mb-2">
-                {slide.title}
-              </h1>
-              {/* FIX: Teks deskripsi mengecil di mobile (text-xs) agar tidak memakan tempat */}
-              <p className="text-xs sm:text-sm tracking-wide text-white/90 drop-shadow max-w-xs sm:max-w-md mx-auto">
-                {slide.subtitle}
-              </p>
-            </div>
-          </div>
+          </Link>
         ))}
 
         {/* Gradient Overlay */}
@@ -97,24 +98,18 @@ export default function HeroSlider() {
               key={i}
               aria-label={`Go to slide ${i + 1}`}
               onClick={() => handleNavigation(i)}
-              className={`h-1.5 rounded-full border-none cursor-pointer transition-all duration-300 p-0 ${
-                i === current ? "bg-white w-5 sm:w-7" : "bg-white/50 w-1.5 sm:w-2 hover:bg-white/75"
-              }`}
+              className={`h-1.5 rounded-full border-none cursor-pointer transition-all duration-300 p-0 ${i === current ? "bg-white w-5 sm:w-7" : "bg-white/50 w-1.5 sm:w-2 hover:bg-white/75"
+                }`}
             />
           ))}
         </div>
 
-        {/* Prev Arrow */}
-        {/* FIX: Ukuran tombol panah mengecil di mobile (w-8 h-8) dan posisi lebih rapat ke tepi (left-3) */}
         <button
           aria-label="Previous slide"
           onClick={() => handleNavigation(current - 1)}
-          className="absolute top-1/2 -translate-y-1/2 left-3 sm:left-6 z-30 w-8 h-8 sm:w-11 sm:h-11 rounded-full flex items-center justify-center border border-white/35 bg-white/20 text-white cursor-pointer transition-all duration-300 hover:scale-105 hover:bg-white/30 backdrop-blur-sm"
+          className="absolute top-1/2 -translate-y-1/2 left-3 sm:left-6 z-30 w-8 h-8 sm:w-11 sm:h-11 rounded-full flex items-center justify-center border border-white/35 bg-white/20 dark:border-neutral-950/35 dark:bg-neutral-950/20 text-white dark:text-neutral-950 cursor-pointer transition-all duration-300 hover:scale-105 hover:bg-white/30 dark:hover:bg-neutral-950/30 backdrop-blur-sm"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 sm:w-[18px] sm:h-[18px]" viewBox="0 0 24 24"
-            fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
+          <ChevronLeft className="dark:text-neutral-950" />
         </button>
 
         {/* Next Arrow */}
@@ -122,12 +117,9 @@ export default function HeroSlider() {
         <button
           aria-label="Next slide"
           onClick={() => handleNavigation(current + 1)}
-          className="absolute top-1/2 -translate-y-1/2 right-3 sm:right-6 z-30 w-8 h-8 sm:w-11 sm:h-11 rounded-full flex items-center justify-center border border-white/35 bg-white/20 text-white cursor-pointer transition-all duration-300 hover:scale-105 hover:bg-white/30 backdrop-blur-sm"
+          className="absolute top-1/2 -translate-y-1/2 right-3 sm:right-6 z-30 w-8 h-8 sm:w-11 sm:h-11 rounded-full flex items-center justify-center border border-white/35 bg-white/20 text-white dark:border-neutral-950/35 dark:bg-neutral-950/20 dark:text-neutral-950 cursor-pointer transition-all duration-300 hover:scale-105 hover:bg-white/30 dark:hover:bg-neutral-950/30 cursor-pointer transition-all duration-300 hover:scale-105 hover:bg-white/30 backdrop-blur-sm"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 sm:w-[18px] sm:h-[18px]" viewBox="0 0 24 24"
-            fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="9 18 15 12 9 6" />
-          </svg>
+          <ChevronRight className="dark:text-neutral-950" />
         </button>
       </div>
     </section>

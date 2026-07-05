@@ -40,7 +40,7 @@ export default function FilterSidebar({ filters, onChange }: FilterSidebarProps)
       {/* Categories */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-xs font-bold uppercase tracking-widest text-neutral-500">
+          <h2 className="text-xs font-bold uppercase tracking-widest text-neutral-500 dark:text-white">
             Categories
           </h2>
           <span className="w-1.5 h-1.5 rounded-full bg-[#0022FF]" aria-hidden="true" />
@@ -53,7 +53,7 @@ export default function FilterSidebar({ filters, onChange }: FilterSidebarProps)
                 className={`w-full text-left px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 cursor-pointer ${
                   filters.category === cat.id
                     ? "bg-[#0022FF] text-white"
-                    : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900"
+                    : "text-neutral-600 dark:text-neutral-300 hover:bg-neutral-800 hover:text-white"
                 }`}
               >
                 {cat.label}
@@ -63,12 +63,12 @@ export default function FilterSidebar({ filters, onChange }: FilterSidebarProps)
         </ul>
       </div>
 
-      <div className="border-t border-neutral-200" />
+      <div className="border-t border-neutral-200 dark:border-neutral-800" />
 
       {/* Price Range */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-xs font-bold uppercase tracking-widest text-neutral-500">
+          <h2 className="text-xs font-bold uppercase tracking-widest text-neutral-500 dark:text-white">
             Prices
           </h2>
           <span className="w-1.5 h-1.5 rounded-full bg-[#0022FF]" aria-hidden="true" />
@@ -76,7 +76,7 @@ export default function FilterSidebar({ filters, onChange }: FilterSidebarProps)
         <div className="flex flex-col gap-2">
           <div className="flex gap-2">
             <div className="flex-1">
-              <label htmlFor="filter-min-price" className="text-[10px] text-neutral-400 mb-1 block">
+              <label htmlFor="filter-min-price" className="text-[10px] text-neutral-400 dark:text-neutral-300 mb-1 block">
                 Min (Rp)
               </label>
               <input
@@ -85,11 +85,11 @@ export default function FilterSidebar({ filters, onChange }: FilterSidebarProps)
                 placeholder="0"
                 value={localMin}
                 onChange={(e) => setLocalMin(e.target.value)}
-                className="w-full h-9 px-3 bg-neutral-100 border border-neutral-200 rounded-xl text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-[#0022FF] focus:bg-white transition-colors"
+                className="w-full h-9 px-3 bg-neutral-100 dark:bg-neutral-900 dark:border-neutral-800 border border-neutral-200 rounded-xl text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-[#0022FF] focus:bg-white transition-colors"
               />
             </div>
             <div className="flex-1">
-              <label htmlFor="filter-max-price" className="text-[10px] text-neutral-400 mb-1 block">
+              <label htmlFor="filter-max-price" className="text-[10px] text-neutral-400 dark:text-neutral-300 mb-1 block">
                 Max (Rp)
               </label>
               <input
@@ -98,7 +98,7 @@ export default function FilterSidebar({ filters, onChange }: FilterSidebarProps)
                 placeholder="999999"
                 value={localMax}
                 onChange={(e) => setLocalMax(e.target.value)}
-                className="w-full h-9 px-3 bg-neutral-100 border border-neutral-200 rounded-xl text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-[#0022FF] focus:bg-white transition-colors"
+                className="w-full h-9 px-3 bg-neutral-100 border border-neutral-200 rounded-xl text-sm text-neutral-900 dark:bg-neutral-900 dark:border-neutral-800 placeholder-neutral-400 focus:outline-none focus:border-[#0022FF] focus:bg-white transition-colors"
               />
             </div>
           </div>
@@ -111,12 +111,12 @@ export default function FilterSidebar({ filters, onChange }: FilterSidebarProps)
         </div>
       </div>
 
-      <div className="border-t border-neutral-200" />
+      <div className="border-t border-neutral-200 dark:border-neutral-800" />
 
       {/* Rating Filter */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-xs font-bold uppercase tracking-widest text-neutral-500">
+          <h2 className="text-xs font-bold uppercase tracking-widest text-neutral-500 dark:text-white">
             Ratings
           </h2>
           <span className="w-1.5 h-1.5 rounded-full bg-[#0022FF]" aria-hidden="true" />
@@ -135,7 +135,7 @@ export default function FilterSidebar({ filters, onChange }: FilterSidebarProps)
               aria-label={`Filter ${star} stars and above`}
             >
               <StarRating rating={star} size={13} />
-              <span className="text-xs text-neutral-500 group-hover:text-neutral-800 transition-colors">
+              <span className="text-xs text-neutral-500 dark:text-neutral-300 group-hover:text-neutral-800 transition-colors">
                 & upper
               </span>
             </button>
