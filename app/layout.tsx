@@ -5,8 +5,14 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { CartProvider } from "@/contexts/CartContext";
 
 export const metadata: Metadata = {
-  title: "Crafties — Handcraft Marketplace",
+  title: "Crafties",
   description: "Crafties — Find best local crafts in Indonesia",
+  icons: [
+      {
+        url: '/assets/img/tes.png',
+        sizes: '10'
+      },
+    ],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
