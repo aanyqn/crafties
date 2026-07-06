@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Bell, Store, X, Package, Truck, CheckCircle2, User, UserCog, LogOut } from "lucide-react";
+import { Bell, Store, X, Package, Truck, CheckCircle2, User, UserCog, LogOut, Menu } from "lucide-react";
 import ThemeToggle from "../ThemeToggle"; // Pastikan path ini sesuai di project Anda
 
 // ─── Types & Mock Data ────────────────────────────────────────────────────────
@@ -170,6 +170,7 @@ function NotificationModal({ onClose }: { onClose: () => void }) {
 export default function CrafterNavbar() {
     const pathname = usePathname();
     const [isNotifOpen, setIsNotifOpen] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const navLinks = [
         { name: "Dashboard", href: "/crafter" },
@@ -196,13 +197,31 @@ export default function CrafterNavbar() {
         };
     }, []);
 
+    // Prevent scrolling when mobile menu is open
+    useEffect(() => {
+        if (isMobileMenuOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "unset";
+        }
+    }, [isMobileMenuOpen]);
+
     return (
         <>
             <nav className="sticky top-0 z-40 w-full bg-white dark:bg-neutral-950 border-b border-neutral-200 dark:border-neutral-800">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-16">
-                        {/* Logo */}
+                        {/* Logo & Mobile Menu Toggle */}
                         <div className="flex-shrink-0 flex items-center">
+                            {/* Hamburger Menu (Mobile Only) */}
+                            <button
+                                onClick={() => setIsMobileMenuOpen(true)}
+                                aria-label="Open Menu"
+                                className="md:hidden mr-3 flex items-center justify-center w-9 h-9 rounded-full text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+                            >
+                                <Menu size={20} />
+                            </button>
+
                             <Link href="/" className="flex-shrink-0">
                                 <Image
                                     src="/assets/img/LOGO-2.png"
@@ -212,7 +231,7 @@ export default function CrafterNavbar() {
                                     className="h-5 w-auto"
                                 />
                             </Link>
-                            <span className="inline-flex items-center px-2 py-0.5 rounded-full ms-3 text-[11px] font-semibold bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200 dark:bg-emerald-950 dark:text-emerald-400 dark:ring-emerald-800">
+                            <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full ms-3 text-[11px] font-semibold bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200 dark:bg-emerald-950 dark:text-emerald-400 dark:ring-emerald-800">
                                 Crafter
                             </span>
                         </div>
@@ -240,7 +259,7 @@ export default function CrafterNavbar() {
                         </div>
 
                         {/* Profile & Notifications */}
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-1 sm:gap-3">
                             <ThemeToggle />
 
                             {/* Notification Bell */}
@@ -261,7 +280,7 @@ export default function CrafterNavbar() {
                                 </button>
                             </div>
 
-                            <div className="relative group">
+                            <div className="relative group" ref={dropdownRef}>
                                 {/* ── Trigger Button ── */}
                                 <button
                                     onClick={() => setIsOpen(!isOpen)}
@@ -319,16 +338,65 @@ export default function CrafterNavbar() {
                 </div>
             </nav>
 
+            {/* ── Mobile Navigation Drawer ── */}
+            {isMobileMenuOpen && (
+                <div className="md:hidden fixed inset-0 z-50 flex">
+                    <div
+                        className="absolute inset-0 bg-black/40 backdrop-blur-[2px] transition-opacity"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                    />
+                    <div className="relative w-64 max-w-[80%] h-full bg-white dark:bg-neutral-950 shadow-2xl flex flex-col animate-drawer-in border-r border-neutral-200 dark:border-neutral-800">
+                        <div className="flex items-center justify-between h-16 px-5 border-b border-neutral-100 dark:border-neutral-800">
+                            <span className="font-bold text-neutral-900 dark:text-white">Menu</span>
+                            <button
+                                title="menu"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="w-8 h-8 flex items-center justify-center rounded-full text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
+                        <div className="flex flex-col py-3 overflow-y-auto">
+                            {navLinks.map((link) => {
+                                const isActive =
+                                    link.href === "/crafter"
+                                        ? pathname === "/crafter"
+                                        : pathname.startsWith(link.href);
+                                return (
+                                    <Link
+                                        key={link.name}
+                                        href={link.href}
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                        className={`px-5 py-3 text-sm font-medium transition-colors ${isActive
+                                            ? "text-[#0022FF] dark:text-blue-400 bg-blue-50/50 dark:bg-blue-900/10 border-r-2 border-[#0022FF]"
+                                            : "text-neutral-600 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-900"
+                                            }`}
+                                    >
+                                        {link.name}
+                                    </Link>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Notification Modal Render */}
             {isNotifOpen && <NotificationModal onClose={() => setIsNotifOpen(false)} />}
 
-            {/* Modal Keyframes */}
+            {/* Modal & Drawer Keyframes */}
             <style>{`
                 @keyframes modal-in {
                     from { opacity: 0; transform: scale(0.96) translateY(-8px); }
                     to   { opacity: 1; transform: scale(1) translateY(0); }
                 }
                 .animate-modal-in { animation: modal-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) both; }
+                
+                @keyframes drawer-in {
+                    from { transform: translateX(-100%); }
+                    to   { transform: translateX(0); }
+                }
+                .animate-drawer-in { animation: drawer-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) both; }
             `}</style>
         </>
     );
